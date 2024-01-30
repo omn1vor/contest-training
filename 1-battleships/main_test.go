@@ -19,25 +19,29 @@ func TestMain(t *testing.T) {
 		answers := strings.Split(answerStrings[testNo], "\n")
 		for i, input := range inputs {
 			params := strings.Split(input, " ")
-			got := boolString(checkDate(params))
+			got := checkShips(params)
 			want := answers[i]
 			if got != want {
-				t.Fatalf("Test file no. %s: %s = %s, want %s", testNo, input, got, want)
+				t.Errorf("Test file no. %s: %s = %s, want %s", testNo, input, got, want)
 			}
 		}
-
 	}
-
 }
 
 func readTestFiles() (inputs map[string]string, answers map[string]string) {
 	inputs = map[string]string{}
 	answers = map[string]string{}
 
-	entries, _ := os.ReadDir(testsDir)
+	entries, err := os.ReadDir(testsDir)
+	if err != nil {
+		panic(err)
+	}
 	for _, entry := range entries {
 		idx, isAnswer := strings.CutSuffix(entry.Name(), ".a")
-		bytes, _ := os.ReadFile(filepath.Join(testsDir, entry.Name()))
+		bytes, err := os.ReadFile(filepath.Join(testsDir, entry.Name()))
+		if err != nil {
+			panic(err)
+		}
 		if isAnswer {
 			answers[idx] = string(bytes)
 		} else {
