@@ -33,6 +33,7 @@ func checkShips(ships []string) string {
 	}
 
 	for _, ship := range ships {
+		ship = strings.TrimSpace(ship)
 		counts[ship]--
 		if counts[ship] < 0 {
 			return no

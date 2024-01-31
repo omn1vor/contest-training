@@ -20,9 +20,9 @@ func TestMain(t *testing.T) {
 		for i, input := range inputs {
 			params := strings.Split(input, " ")
 			got := checkShips(params)
-			want := answers[i]
+			want := strings.TrimSpace(answers[i])
 			if got != want {
-				t.Errorf("Test file no. %s: %s = %s, want %s", testNo, input, got, want)
+				t.Errorf("Test file no. %s: %s = %s, want %s", testNo, strings.TrimSpace(input), got, want)
 			}
 		}
 	}
