@@ -18,7 +18,8 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		data := strings.Split(scanner.Text(), " ")
+		line := strings.TrimSpace(scanner.Text())
+		data := strings.Split(line, " ")
 		if len(data) == 1 {
 			continue
 		}
@@ -37,7 +38,7 @@ func checkDate(dates []string) bool {
 		}
 		return day <= febMax
 	} else {
-		isShort := month < 6 && month%2 == 0 || month > 5 && month%2 != 0
+		isShort := month < 8 && month%2 == 0 || month > 7 && month%2 != 0
 		if isShort {
 			return day <= shortMax
 		}

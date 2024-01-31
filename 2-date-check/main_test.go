@@ -18,6 +18,7 @@ func TestMain(t *testing.T) {
 		inputs := strings.Split(inputString, "\n")[1:]
 		answers := strings.Split(answerStrings[testNo], "\n")
 		for i, input := range inputs {
+			input = strings.TrimSpace(input)
 			params := strings.Split(input, " ")
 			got := boolString(checkDate(params))
 			want := strings.TrimSpace(answers[i])
@@ -28,6 +29,20 @@ func TestMain(t *testing.T) {
 
 	}
 
+}
+
+func TestIsLeap(t *testing.T) {
+	cases := map[int]bool{
+		2261: false,
+		2109: false,
+	}
+
+	for year, want := range cases {
+		got := isLeap(year)
+		if want != got {
+			t.Fatalf("%d = %v, want %v", year, got, want)
+		}
+	}
 }
 
 func readTestFiles() (inputs map[string]string, answers map[string]string) {
