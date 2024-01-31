@@ -12,19 +12,6 @@ var templates = []string{
 }
 
 func main() {
-
-	// for _, s := range []string{
-	// 	"R48FAO00OOO0OOA99OKA99OK",
-	// 	"R48FAO00OOO0OOA99OKA99O",
-	// 	"A9PQ",
-	// 	"A9PQA",
-	// 	"A99AAA99AAA99AAA99AA",
-	// 	"AP9QA",
-	// } {
-	// 	fmt.Println(validPlates(s))
-	// }
-	// return
-
 	in := os.Stdin
 
 	var count int
@@ -32,7 +19,7 @@ func main() {
 
 	var input string
 	for i := 0; i < count; i++ {
-		fmt.Fscan(in, input)
+		fmt.Fscan(in, &input)
 		fmt.Println(validPlates(input))
 	}
 
