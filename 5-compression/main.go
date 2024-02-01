@@ -3,46 +3,73 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func main() {
 	in := bufio.NewReader(os.Stdin)
 
 	var setCount int
-	fmt.Fscanln(in, &setCount)
+	fmt.Fscan(in, &setCount)
 
 	for i := 0; i < setCount; i++ {
-		var count int
-		fmt.Fscanln(in, &count)
-
-		nums := make([]int, count)
-		for i := range nums {
-			fmt.Scan(in, &nums[i])
+		compressed := compress(in)
+		fmt.Println(len(compressed))
+		strs := make([]string, len(compressed))
+		for i, num := range compressed {
+			strs[i] = strconv.Itoa(num)
 		}
-
-		res := []int{}
-		count = 0
-		direction := 1
-
-		for i, num := range nums {
-			if count == 0 {
-				res = append(res, num)
-			}
-
-			descLen := scanLen(nums, i, -1)
-			ascLen := scanLen(nums, i, 1)
-
-		}
+		fmt.Println(strings.Join(strs, " "))
 
 	}
 }
 
-func scanLen(nums []int, idx, direction int) int {
-	count := 0
-	for idx < len(nums)-1 && nums[idx] == nums[idx+1*direction] {
-		count++
-		idx++
+func compress(in *bufio.Reader) []int {
+	var count int
+	fmt.Fscan(in, &count)
+
+	nums := make([]int, count)
+	for i := range nums {
+		_, err := fmt.Fscan(in, &nums[i])
+		if err != nil {
+			panic(err)
+		}
 	}
-	return count
+
+	res := []int{}
+	count = 0
+	last := math.MinInt
+	direction := 0
+
+	for i, num := range nums {
+		possibleDirection := getDirection(last, num)
+		if possibleDirection == direction && possibleDirection != 0 {
+			count++
+		} else {
+			if i != 0 {
+				res = append(res, count*direction)
+			}
+			count = 0
+			direction = 0
+			if i+1 < len(nums) {
+				direction = getDirection(num, nums[i+1])
+			}
+			res = append(res, num)
+		}
+		last = num
+	}
+	res = append(res, count*direction)
+	return res
+}
+
+func getDirection(prev, next int) int {
+	if next == prev+1 {
+		return 1
+	} else if next == prev-1 {
+		return -1
+	}
+	return 0
 }
