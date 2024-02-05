@@ -51,6 +51,9 @@ func process(scanner *bufio.Scanner) {
 
 func printBranch(b []node, nodes map[string][]node, prefix string) {
 	for i, node := range b {
+		if i > 0 && prefix == "" {
+			fmt.Println()
+		}
 		if prefix != "" {
 			fmt.Println(prefix)
 		}
@@ -75,8 +78,5 @@ func printBranch(b []node, nodes map[string][]node, prefix string) {
 			newPrefix = prefix + newPrefix
 		}
 		printBranch(nodes[node.id], nodes, newPrefix)
-	}
-	if prefix == "" {
-		fmt.Println()
 	}
 }
