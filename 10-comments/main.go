@@ -22,11 +22,11 @@ func main() {
 	fmt.Sscan(scanner.Text(), &setCount)
 
 	for i := 0; i < setCount; i++ {
-		process(scanner)
+		fmt.Println(process(scanner))
 	}
 }
 
-func process(scanner *bufio.Scanner) {
+func process(scanner *bufio.Scanner) string {
 	scanner.Scan()
 	var count int
 	fmt.Sscan(scanner.Text(), &count)
@@ -46,37 +46,39 @@ func process(scanner *bufio.Scanner) {
 	}
 
 	branch := nodes["-1"]
-	printBranch(branch, nodes, "")
+	return printBranch(branch, nodes, "")
 }
 
-func printBranch(b []node, nodes map[string][]node, prefix string) {
-	for i, node := range b {
+func printBranch(branch []node, nodes map[string][]node, prefix string) string {
+	b := &strings.Builder{}
+	for i, node := range branch {
 		if i > 0 && prefix == "" {
-			fmt.Println()
+			fmt.Fprintln(b)
 		}
 		if prefix != "" {
-			fmt.Println(prefix)
+			fmt.Fprintln(b, prefix)
 		}
-		fmt.Print(prefix)
+		fmt.Fprint(b, prefix)
 		if prefix != "" {
-			fmt.Print("--")
+			fmt.Fprint(b, "--")
 		}
-		fmt.Println(node.text)
-		hasSiblingDown := len(b) > i+1
+		fmt.Fprintln(b, node.text)
+		hasSiblingDown := len(branch) > i+1
 		newPrefix := "|"
 		if prefix != "" {
 			newPrefix = "  " + newPrefix
 		}
 
 		if !hasSiblingDown {
-			if len(prefix) > 1 {
+			if len(prefix) >= 3 {
 				newPrefix = prefix[:len(prefix)-3] + "   " + newPrefix
 			} else {
-				newPrefix = "" + newPrefix
+				newPrefix = " " + newPrefix
 			}
 		} else {
 			newPrefix = prefix + newPrefix
 		}
-		printBranch(nodes[node.id], nodes, newPrefix)
+		b.WriteString(printBranch(nodes[node.id], nodes, newPrefix))
 	}
+	return b.String()
 }
