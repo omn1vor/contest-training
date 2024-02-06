@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 )
 
 type node struct {
-	parent string
-	id     string
+	parent int
+	id     int
 	text   string
 }
 
@@ -31,13 +32,15 @@ func process(scanner *bufio.Scanner) string {
 	var count int
 	fmt.Sscan(scanner.Text(), &count)
 
-	nodes := map[string][]node{}
+	nodes := map[int][]node{}
 
 	for i := 0; i < count; i++ {
 		scanner.Scan()
 		text := scanner.Text()
-		id, text, _ := strings.Cut(text, " ")
-		parent, text, _ := strings.Cut(text, " ")
+		idStr, text, _ := strings.Cut(text, " ")
+		parentStr, text, _ := strings.Cut(text, " ")
+		id, _ := strconv.Atoi(idStr)
+		parent, _ := strconv.Atoi(parentStr)
 		nodes[parent] = append(nodes[parent], node{parent, id, text})
 	}
 
@@ -45,11 +48,11 @@ func process(scanner *bufio.Scanner) string {
 		sort.Slice(children, func(i, j int) bool { return children[i].id < children[j].id })
 	}
 
-	branch := nodes["-1"]
+	branch := nodes[-1]
 	return printBranch(branch, nodes, "")
 }
 
-func printBranch(branch []node, nodes map[string][]node, prefix string) string {
+func printBranch(branch []node, nodes map[int][]node, prefix string) string {
 	b := &strings.Builder{}
 	for i, node := range branch {
 		if i > 0 && prefix == "" {
@@ -66,14 +69,13 @@ func printBranch(branch []node, nodes map[string][]node, prefix string) string {
 		hasSiblingDown := len(branch) > i+1
 		newPrefix := "|"
 		if prefix != "" {
-			newPrefix = "  " + newPrefix
+			newPrefix = "  |"
 		}
-
-		if !hasSiblingDown {
-			if len(prefix) >= 3 {
-				newPrefix = prefix[:len(prefix)-3] + "   " + newPrefix
-			} else {
+		if !hasSiblingDown && prefix != "" {
+			if prefix == "|" {
 				newPrefix = " " + newPrefix
+			} else {
+				newPrefix = prefix[:len(prefix)-3] + "   " + newPrefix
 			}
 		} else {
 			newPrefix = prefix + newPrefix
